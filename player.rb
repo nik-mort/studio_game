@@ -10,6 +10,10 @@ class Player
     "I'm #{@name} with a health of #{@health} and a score of #{score}"
   end
 
+  def <=>(other)
+    other.score <=> score
+  end
+
   def strong?
     if @health > 100
       true
@@ -31,14 +35,4 @@ class Player
     @health += 15
     puts "#{@name} got w00ted"
   end
-end
-
-if __FILE__ == $0
-  player = Player.new('moe')
-  puts player.name
-  puts player.health
-  player.w00t
-  puts player.health
-  player.blam
-  puts player.health
 end

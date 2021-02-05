@@ -1,5 +1,4 @@
 require_relative 'game'
-require 'rspec'
 
 describe Game do
   before do

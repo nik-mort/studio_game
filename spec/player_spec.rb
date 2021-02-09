@@ -1,5 +1,6 @@
 require 'rspec'
-require_relative 'player'
+require_relative '../player'
+require_relative '../treasure_trove'
 describe Player do
   before(:each) do
     $stdout = StringIO.new
@@ -13,10 +14,14 @@ describe Player do
     expect(@player.health).to eq(150)
   end
   it 'has a string representation' do
-    expect(@player.to_s).to eq("I'm Larry with a health of 150 and a score of 155")
+    @player.found_treasure(Treasure.new(:hammer, 50))
+    @player.found_treasure(Treasure.new(:hammer, 50))
+    expect(@player.to_s).to eq("I'm Larry. health = 150, points = 100, score = 250")
   end
-  it 'computes a score as the sum of its health and length of name' do
-    expect(@player.score).to eq(155)
+  it 'computes a score as the sum of its health and points' do
+    @player.found_treasure(Treasure.new(:hammer, 50))
+    @player.found_treasure(Treasure.new(:hammer, 50))
+    expect(@player.score).to eq(250)
   end
   it 'increases health by 15 when w00ted' do
     @player.w00t
@@ -26,6 +31,23 @@ describe Player do
     @player.blam
     expect(@player.health).to eq(@initial_health - 10)
   end
+
+  it "computes points as the sum of all treasure points" do
+    expect(@player.points).to eq(0)
+
+    @player.found_treasure(Treasure.new(:hammer, 50))
+
+    expect(@player.points).to eq(50)
+
+    @player.found_treasure(Treasure.new(:crowbar, 400))
+
+    expect(@player.points).to eq(450)
+
+    @player.found_treasure(Treasure.new(:hammer, 50))
+
+    expect(@player.points).to eq(500)
+  end
+
   context 'created with a default health' do
     before do
       @player = Player.new('larry')

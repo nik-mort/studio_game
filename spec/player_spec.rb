@@ -48,6 +48,39 @@ describe Player do
     expect(@player.points).to eq(500)
   end
 
+  it 'can be created from a CSV string' do
+    player = Player.from_csv('larry,150')
+
+    expect(player.name).to eq('Larry')
+    expect(player.health).to eq(150)
+  end
+
+  let(:expected_treasure) do
+    [
+      Treasure.new(:skillet, 200),
+      Treasure.new(:hammer, 50),
+      Treasure.new(:bottle, 25)
+    ]
+  end
+
+  it "yields each found treasure and its total points" do
+    @player.found_treasure(Treasure.new(:skillet, 100))
+    @player.found_treasure(Treasure.new(:skillet, 100))
+    @player.found_treasure(Treasure.new(:hammer, 50))
+    @player.found_treasure(Treasure.new(:bottle, 5))
+    @player.found_treasure(Treasure.new(:bottle, 5))
+    @player.found_treasure(Treasure.new(:bottle, 5))
+    @player.found_treasure(Treasure.new(:bottle, 5))
+    @player.found_treasure(Treasure.new(:bottle, 5))
+
+    yielded = []
+    @player.each_found_treasure do |treasure|
+      yielded << treasure
+    end
+
+    expect(yielded).to eq(expected_treasure)
+  end
+
   context 'created with a default health' do
     before do
       @player = Player.new('larry')

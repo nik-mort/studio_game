@@ -9,11 +9,16 @@ class Player
   end
 
   def to_s
-    "I'm Larry. health = #{@health}, points = #{points}, score = #{score}"
+    "I'm #{@name}. health = #{@health}, points = #{points}, score = #{score}"
   end
 
   def <=>(other)
     other.score <=> score
+  end
+
+  def self.from_csv(string)
+    name, health = string.split(',')
+    Player.new(name, Integer(health))
   end
 
   def found_treasure(treasure)
@@ -22,20 +27,22 @@ class Player
     puts "#{@name}'s treasures: #{@found_treasures}"
   end
 
+  def each_found_treasure
+    @found_treasures.each do |name, points|
+      yield Treasure.new(name, points)
+    end
+  end
+
   def points
     @found_treasures.values.reduce(0, :+)
   end
 
   def strong?
-    if @health > 100
-      true
-    else
-      false
-    end
+    health > 100
   end
 
   def score
-    @health + points
+    health + points
   end
 
   def blam
